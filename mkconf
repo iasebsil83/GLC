@@ -1,0 +1,29 @@
+# .--------------------------- MKCONF ---------------------------.
+# |     This file is a configuration to generate a Makefile.     |
+# | It uses the command 'makegen' added by program 'Bash_Tools': |
+# |                                                              |
+# |          https://github.com/iasebsil83/Bash_Tools            |
+# '--------------------------------------------------------------'
+
+
+
+#executable
+run -lm -lGL -lGLU -lglut
+
+
+
+#main code
+:-I/usr/include/GL
+src/main lib/glc
+
+
+
+#libraries
+lib/glc
+
+lib/glc_specials  lib/glc
+
+:-I/usr/include/GL -lm
+lib/glc_objects2D lib/glc
+
+lib/glc_objects3D lib/glc
