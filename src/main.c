@@ -29,6 +29,7 @@ extern          int   GLC_mouseScroll;
 extern          int   GLC_mouseState;
 extern          xyz   GLC_camPos;    //3D attributes
 extern          xyz   GLC_camRot;
+extern          xyz   GLC_lookAt;
 extern          xyz   GLC_light;
 
 //rays
@@ -116,26 +117,32 @@ void GLC_event(int event){
 				case GLC_KEY_Z:
 				case GLC_KEY_z:
 					GLC_camPos.z -= 3;
+					GLC_lookAt.z -= 3;
 				break;
 				case GLC_KEY_S:
 				case GLC_KEY_s:
 					GLC_camPos.z += 3;
+					GLC_lookAt.z +=3;
 				break;
 				case GLC_KEY_Q:
 				case GLC_KEY_q:
 					GLC_camPos.x -= 3;
+					GLC_lookAt.x -= 3;
 				break;
 				case GLC_KEY_D:
 				case GLC_KEY_d:
 					GLC_camPos.x += 3;
+					GLC_lookAt.x += 3;
 				break;
 				case GLC_KEY_A:
 				case GLC_KEY_a:
 					GLC_camPos.y -= 3;
+					GLC_lookAt.y -= 3;
 				break;
 				case GLC_KEY_E:
 				case GLC_KEY_e:
 					GLC_camPos.y += 3;
+					GLC_lookAt.y += 3;
 				break;
 
 

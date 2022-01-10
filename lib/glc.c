@@ -82,9 +82,6 @@ static int GLC_timedExecution_delay = -1;
 //#define DEEP_DEBUG_ON
 
 //constant 3D attributes (glc only)
-#define GLC_LOOK_AT_X 0.0
-#define GLC_LOOK_AT_Y 0.0
-#define GLC_LOOK_AT_Z 0.0
 #define GLC_UP_X 0.0
 #define GLC_UP_Y 1.0
 #define GLC_UP_Z 0.0
@@ -96,6 +93,11 @@ xyz GLC_camPos = {
 	.z = 0.0
 };
 xyz GLC_camRot = {
+	.x = 0.0,
+	.y = 0.0,
+	.z = 0.0
+};
+xyz GLC_lookAt = {
 	.x = 0.0,
 	.y = 0.0,
 	.z = 0.0
@@ -174,8 +176,7 @@ static void GLCL_timedExecution(int i){
 
 
 //display
-static void GLCL_display(){
-
+static void GLCL_display() {
 	//clear screen
 	glClearColor(
 		(unit)(GLC_skyColor.r),
@@ -191,7 +192,7 @@ static void GLCL_display(){
 	//set viewpoint
 	gluLookAt(
 		GLC_camPos.x,  GLC_camPos.y,  GLC_camPos.z,
-		GLC_LOOK_AT_X, GLC_LOOK_AT_Y, GLC_LOOK_AT_Z,
+		GLC_lookAt.x,  GLC_lookAt.y,  GLC_lookAt.z,
 		GLC_UP_X,      GLC_UP_Y,      GLC_UP_Z
 	);
 
