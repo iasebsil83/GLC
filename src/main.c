@@ -13,29 +13,29 @@
 
 
 
-// -------- DECLARATIONS --------
+// ---------------- DECLARATIONS ----------------
 
 //GLC shared variables
-extern unsigned int   GLC_width;       //resize
-extern unsigned int   GLC_height;
-extern unsigned int   GLC_newWidth;
-extern unsigned int   GLC_newHeight;
-extern          int   GLC_keyState;    //keyboard
-extern unsigned short GLC_key;
-extern          int   GLC_mouseX;      //mouse
-extern          int   GLC_mouseY;
-extern          int   GLC_mouseButton;
-extern          int   GLC_mouseScroll;
-extern          int   GLC_mouseState;
-extern          xyz   GLC_camPos;    //3D attributes
-extern          xyz   GLC_camRot;
-extern          xyz   GLC_lookAt;
-extern          xyz   GLC_light;
+extern GLC_vars GLC;
+extern color*   GLC_colors[8];
 
-//rays
+//GLC default values used
+extern ray GLC_DEFAULT_ray;
+extern prs GLC_DEFAULT_prs;
+
+//camera movements
+#define CAMERA_MOVE_STEP  1
+#define CAMERA_ANGLE_STEP 0.04
+
+//custom rays
 ambient  myAmbient  = {0.913, 0.71, 0.51, 1.0};
 diffuse  myDiffuse  = {0.1,   0.1,  0.1,  1.0};
-specular mySpecular = {0.0,   0.0,  0.0,  1.0};
+specular mySpecular = {1.0,   1.0,  1.0,  1.0};
+ray myRay = {
+	.a = &myAmbient,
+	.d = &myDiffuse,
+	.s = &mySpecular
+};
 
 
 
@@ -44,46 +44,78 @@ specular mySpecular = {0.0,   0.0,  0.0,  1.0};
 
 
 
-// -------- SCENE --------
+// ---------------- SCENE ----------------
 
-//colors
-color red     = {.r=255, .g=0,   .b=0,   .a=255};
-color green   = {.r=0,   .g=255, .b=0,   .a=255};
-color blue    = {.r=0,   .g=0,   .b=255, .a=255};
-color magenta = {.r=255, .g=0,   .b=255, .a=255};
-color yellow  = {.r=255, .g=255, .b=0,   .a=255};
-color cyan    = {.r=0,   .g=255, .b=255, .a=255};
-color white   = {.r=255, .g=255, .b=255, .a=255};
-color black   = {.r=0,   .g=0,   .b=0,   .a=255};
+//pictures
+PNG* creeper;
+PNG* satellite;
+
+//brain by nailbansal : https://www.thingiverse.com/thing:5197301/files
+stl* brain_obj;
+prs  brain_prs = {
+	.pos = { .x=10,   .y=1,    .z=25   },
+	.rot = { .x=0,    .y=0,    .z=0    },
+	.sca = { .x=0.01, .y=0.01, .z=0.01 }
+};
+
+//mando by PeteBaker : https://www.thingiverse.com/thing:4133665/files
+stl* mando_obj;
+prs  mando_prs = {
+	.pos = { .x=150,  .y=1,   .z=25   },
+	.rot = { .x=M_PI, .y=0,   .z=0    },
+	.sca = { .x=0.5,  .y=0.5, .z=0.5  }
+};
+
+//mora coins by fkiliver : https://www.thingiverse.com/thing:4801477/files
+stl* mora_obj;
+prs  mora_prs = {
+	.pos = { .x=-10, .y=1, .z=20 },
+	.rot = { .x=0,   .y=0, .z=0  },
+	.sca = { .x=1,   .y=1, .z=1  }
+};
 
 //ground
-unit ground_lx = 100;
-unit ground_ly = 1;
-unit ground_lz = 100;
+xyz ground_size = { .x=1000, .y=-5, .z=1000 };
 
-//myCube
-unit myCube_px = 1;
-unit myCube_py = 1;
-unit myCube_pz = 1;
-unit myCube_rx = 0.0;
-unit myCube_ry = 0.0;
-unit myCube_rz = 0.0;
-unit myCube_lx = 20;
-unit myCube_ly = 30;
-unit myCube_lz = 40;
+//myBox
+prs myBox_prs = {
+	.pos = { .x=10, .y=1, .z=5 },
+	.rot = { .x=0,  .y=0, .z=0 },
+	.sca = { .x=1,  .y=1, .z=1 }
+};
+xyz myBox_size = { .x=20, .y=30, .z=40 };
 
-//user
-float   ANGLE  =  90*(M_PI/180);
-#define RADIUS   100
-
+//plane1
+prs plane1_prs = {
+	.pos = { .x=20, .y=1,    .z=40 },
+	.rot = { .x=0,  .y=M_PI, .z=0  },
+	.sca = { .x=1,  .y=1,    .z=1  }
+};
+xy plane1_size = { .x=2, .y=3 };
 
 
 
+//init structures
+void loadStructures(){
+
+	//load pictures
+	creeper   = png_read("png/Creeper.png");
+	satellite = png_read("png/Satellite.png");
+
+	//load stl
+	brain_obj = GLC_loadSTL("stl/Brain.stl");
+	mando_obj = GLC_loadSTL("stl/Mandalorian.stl");
+	mora_obj  = GLC_loadSTL("stl/Mora.stl");
+}
 
 
 
 
-// ---- EVENTS ----
+
+
+
+
+// ---------------- EVENTS ----------------
 
 //events
 void GLC_event(int event){
@@ -92,89 +124,157 @@ void GLC_event(int event){
 		//display
 		case GLC_DISPLAY:
 
+			//plane1
+			GLC_3DPlane(
+				XY(plane1_size),
+				PRS(plane1_prs),
+				GLC_colors[MAGENTA], GLC_TEX_COLOR
+			);
+
 			//ground
 			GLC_3DHexaedron(
-				        0,         0,         0,
-				        0,         0,         0,
-				ground_lx, ground_ly, ground_lz,
-				&green
+				XYZ(ground_size),
+				PRS(GLC_DEFAULT_prs),
+				GLC_colors[GREEN], GLC_TEX_COLOR
 			);
 
 			//myCube
 			GLC_3DHexaedron(
-				myCube_px, myCube_py, myCube_pz,
-				myCube_rx, myCube_ry, myCube_rz,
-				myCube_lx, myCube_ly, myCube_lz,
-				&blue
+				XYZ(myBox_size),
+				PRS(myBox_prs),
+				GLC_colors[BLUE], GLC_TEX_COLOR
+			);
+
+			//brain
+			GLC.currentRay = &myRay;
+			GLC_3DSTL(
+				brain_obj,
+				PRS(brain_prs),
+				GLC_colors[RED]
+			);
+
+			//mando
+			GLC.currentRay = &GLC_DEFAULT_ray;
+			GLC_3DSTL(
+				mando_obj,
+				PRS(mando_prs),
+				GLC_colors[BLACK]
+			);
+
+			//mora
+			GLC_3DSTL(
+				mora_obj,
+				PRS(mora_prs),
+				GLC_colors[WHITE]
 			);
 		break;
 
 		//keyboard
 		case GLC_KEYBOARD:
-			switch(GLC_key){
+			switch(GLC.key){
 
-				//camera
+				//camera position
 				case GLC_KEY_Z:
 				case GLC_KEY_z:
-					GLC_camPos.z -= 3;
-					GLC_lookAt.z -= 3;
+					GLC.camPos.z -= CAMERA_MOVE_STEP;
 				break;
 				case GLC_KEY_S:
 				case GLC_KEY_s:
-					GLC_camPos.z += 3;
-					GLC_lookAt.z +=3;
+					GLC.camPos.z += CAMERA_MOVE_STEP;
 				break;
 				case GLC_KEY_Q:
 				case GLC_KEY_q:
-					GLC_camPos.x -= 3;
-					GLC_lookAt.x -= 3;
+					GLC.camPos.x -= CAMERA_MOVE_STEP;
 				break;
 				case GLC_KEY_D:
 				case GLC_KEY_d:
-					GLC_camPos.x += 3;
-					GLC_lookAt.x += 3;
+					GLC.camPos.x += CAMERA_MOVE_STEP;
 				break;
 				case GLC_KEY_A:
 				case GLC_KEY_a:
-					GLC_camPos.y -= 3;
-					GLC_lookAt.y -= 3;
+					GLC.camPos.y -= CAMERA_MOVE_STEP;
 				break;
 				case GLC_KEY_E:
 				case GLC_KEY_e:
-					GLC_camPos.y += 3;
-					GLC_lookAt.y += 3;
+					GLC.camPos.y += CAMERA_MOVE_STEP;
 				break;
 
 
 
-				//myCube
+				//myBox position
 				case GLC_KEY_O:
 				case GLC_KEY_o:
-					myCube_pz -= 0.5;
+					myBox_prs.pos.z -= 1;
 				break;
 				case GLC_KEY_L:
 				case GLC_KEY_l:
-					myCube_pz += 0.5;
+					myBox_prs.pos.z += 1;
 				break;
 				case GLC_KEY_K:
 				case GLC_KEY_k:
-					myCube_px -= 0.5;
+					myBox_prs.pos.x -= 1;
 				break;
 				case GLC_KEY_M:
 				case GLC_KEY_m:
-					myCube_px += 0.5;
+					myBox_prs.pos.x += 1;
 				break;
 				case GLC_KEY_I:
 				case GLC_KEY_i:
-					myCube_py -= 0.5;
+					myBox_prs.pos.y -= 1;
 				break;
 				case GLC_KEY_P:
 				case GLC_KEY_p:
-					myCube_py += 0.5;
+					myBox_prs.pos.y += 1;
 				break;
 
+
+				//myBox size
+				case GLC_KEY_8:
+					myBox_size.z -= 10;
+				break;
+				case GLC_KEY_5:
+					myBox_size.z += 10;
+				break;
+				case GLC_KEY_4:
+					myBox_size.x -= 10;
+				break;
+				case GLC_KEY_6:
+					myBox_size.x += 10;
+				break;
+				case GLC_KEY_7:
+					myBox_size.y -= 10;
+				break;
+				case GLC_KEY_9:
+					myBox_size.y += 10;
+				break;
 			}
 			GLC_refresh();
+		break;
+
+
+
+		//mouse
+		case GLC_MOUSE_MOVE:
+
+			//camera rotation Y
+			if(GLC.mouseX != GLC.prevMouseX){
+				if(GLC.mouseX > GLC.prevMouseX){
+					GLC.camRot.y += CAMERA_ANGLE_STEP;
+				}else{
+					GLC.camRot.y -= CAMERA_ANGLE_STEP;
+				}
+				GLC_refresh();
+			}
+
+			//camera rotation X
+			if(GLC.mouseY != GLC.prevMouseY){
+				if(GLC.mouseY > GLC.prevMouseY){
+					GLC.camRot.x += CAMERA_ANGLE_STEP;
+				}else{
+					GLC.camRot.x -= CAMERA_ANGLE_STEP;
+				}
+				GLC_refresh();
+			}
 		break;
 
 		//timer
@@ -190,15 +290,13 @@ void GLC_event(int event){
 
 
 
-// ---- EXECUTION ----
+// ---------------- EXECUTION ----------------
 
 //main
 int main(int argc, char** argv){
 
-	//set position
-	GLC_camPos.x = RADIUS*cos(ANGLE);
-	GLC_camPos.y = 0.0;
-	GLC_camPos.z = RADIUS*sin(ANGLE);
+	//load 3D structures
+	loadStructures();
 
 	//init window
 	GLC_init("Program Name [V.V.V]", 800,600);

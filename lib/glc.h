@@ -210,12 +210,23 @@ enum GLC_EVENTS{
 //maths
 #define M_2PI 6.283185307179586
 
+//colors
+#define RED     0
+#define GREEN   1
+#define BLUE    2
+#define MAGENTA 3
+#define CYAN    4
+#define YELLOW  5
+#define WHITE   6
+#define BLACK   7
+
 //2D graphics
 #define GLC_EMPTY  (char)0
 #define GLC_FILLED (char)1
 
-//3D constants
-#define GLC_SKYCOLOR 255 //RGBA color corresponding to (0,  0,  0,255) (perfect black)
+//texture types
+#define GLC_TEX_COLOR   (char)0
+#define GLC_TEX_PICTURE (char)1
 
 //glc types
 typedef float unit;
@@ -223,8 +234,19 @@ typedef float unit;
 typedef struct {
 	unit x;
 	unit y;
+} xy;
+
+typedef struct {
+	unit x;
+	unit y;
 	unit z;
 } xyz;
+
+typedef struct {
+	xyz pos;
+	xyz rot;
+	xyz sca;
+} prs;
 
 typedef struct {
 	unsigned char r;
@@ -243,9 +265,56 @@ typedef struct {
 } ray;
 
 typedef struct {
-	GLfloat pos[4];
+	GLfloat p[4];
 	ray*    r;
 } light;
+
+typedef struct {
+
+	//scene
+	xyz    camPos;
+	xyz    camRot;
+	color* skyColor;
+	ray*   currentRay;
+	light* currentLight;
+
+	//resize
+	unsigned int width;
+	unsigned int height;
+	unsigned int width_2;  // width/2
+	unsigned int height_2; // height/2
+	unsigned int newWidth;
+	unsigned int newHeight;
+
+	//kayboard
+	         int   keyState;
+	unsigned short key;
+
+	//mouse
+	int mouseX;
+	int mouseY;
+	int prevMouseX;
+	int prevMouseY;
+	int mouseState;
+	int mouseButton;
+	int mouseScroll;
+} GLC_vars;
+
+
+
+
+
+
+
+
+// ---------------- SHORTCUTS ----------------
+
+//position
+#define XY(p)  p.x,p.y
+#define XYZ(p) p.x,p.y,p.z
+
+//position - rotation - scale
+#define PRS(o) o.pos.x,o.pos.y,o.pos.z, o.rot.x,o.rot.y,o.rot.z, o.sca.x,o.sca.y,o.sca.z
 
 
 

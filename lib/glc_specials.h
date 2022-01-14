@@ -20,13 +20,26 @@
 
 
 
+// ---------------- TYPES ----------------
+
+//pictures
+typedef struct {
+	unsigned int width;
+	unsigned int height;
+	color* data;
+} pict;
+
+
+
+
+
+
+
+
 // ---------------- 2D ELEMENTS ----------------
 
 //text
 void GLC_text(char* text, unit size, unit x, unit y);
-
-//images
-void GLC_image(unit x, unit y, unit width, unit height, color* data);
 
 
 

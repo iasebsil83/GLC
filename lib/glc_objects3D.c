@@ -22,9 +22,8 @@
 
 // ---------------- DECLARATIONS ----------------
 
-//rays
-extern ray  GLC_defaultRay;
-static ray* GLC_currentRay = &GLC_defaultRay;
+//glc shared variables
+extern GLC_vars GLC;
 
 
 
@@ -36,15 +35,73 @@ static ray* GLC_currentRay = &GLC_defaultRay;
 // ---------------- 3D OBJECTS ----------------
 
 //shapes
-void GLC_3DHexaedron(
-	unit px, unit py, unit pz,
-	unit rx, unit ry, unit rz,
-	unit lx, unit ly, unit lz,
-	color* c
+void GLC_3DPlane(
+	unit lx, unit ly,          //length (width, height)
+	unit px, unit py, unit pz, //position
+	unit rx, unit ry, unit rz, //rotation
+	unit sx, unit sy, unit sz, //scale
+	void* tex, char texType    //texture
 ){
-	if(c){
+
+/* ------------------------------------------------
+                   Coordinates plan
+                   ----------------
+
+          A--------B    --> ^
+          |        |     z   \
+          |        |          \        -->
+          C--------D           X------> x
+                               |
+        A(0, 0, 0)             |
+        B(w, 0, 0)             | -->
+        C(0, h, 0)             v  y
+        D(w, h, 0)
+------------------------------------------------ */
+
+	//texture is a color
+	if(!texType && tex){
+		color* c = (color*)tex;
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
+
+	//start drawing
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+
+		//position - rotation - scale
+		glTranslatef(px, py, pz);
+		glRotatef(rx, 1.0, 0.0, 0.0);
+		glRotatef(ry, 0.0, 1.0, 0.0);
+		glRotatef(rz, 0.0, 0.0, 1.0);
+		glScalef(sx, sy, sz);
+
+		//ray
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  *((GLC.currentRay)->a) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  *((GLC.currentRay)->d) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, *((GLC.currentRay)->s) );
+
+		//shape
+
+		//plane
+		glBegin(GL_QUADS);
+			glVertex3f(px,    py,    pz); //A
+			glVertex3f(px+lx, py,    pz); //B
+			glVertex3f(px+lx, py+ly, pz); //D
+			glVertex3f(px,    py+ly, pz); //C
+		glEnd();
+
+	//end drawing
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+void GLC_3DHexaedron(
+	unit lx, unit ly, unit lz, //length (width, height, depth)
+	unit px, unit py, unit pz, //position
+	unit rx, unit ry, unit rz, //rotation
+	unit sx, unit sy, unit sz, //scale
+	void* tex, char texType    //texture
+){
 
 /* ------------------------------------------------
                    Coordinates plan
@@ -73,14 +130,27 @@ void GLC_3DHexaedron(
         H(w, h, d)
 ------------------------------------------------ */
 
+	//texture is a color
+	if(!texType && tex){
+		color* c = (color*)tex;
+		glColor4f(c->r, c->g, c->b, c->a);
+	}
+
 	//start drawing
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
 
+		//position - rotation - scale
+		glTranslatef(px, py, pz);
+		glRotatef(rx, 1.0, 0.0, 0.0);
+		glRotatef(ry, 0.0, 1.0, 0.0);
+		glRotatef(rz, 0.0, 0.0, 1.0);
+		glScalef(sx, sy, sz);
+
 		//ray
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  *(GLC_currentRay->a) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  *(GLC_currentRay->d) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, *(GLC_currentRay->s) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  *((GLC.currentRay)->a) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  *((GLC.currentRay)->d) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, *((GLC.currentRay)->s) );
 
 		//shape
 
@@ -132,25 +202,17 @@ void GLC_3DHexaedron(
 			glVertex3f(px+lx, py+ly, pz+lz); //H
 		glEnd();
 
-		//position & rotation
-		glTranslatef(px,py,pz);
-		glRotatef(rx, 1.0, 0.0, 0.0);
-		glRotatef(ry, 0.0, 1.0, 0.0);
-		glRotatef(rz, 0.0, 0.0, 1.0);
-
 	//end drawing
 	glPopMatrix();
 	glEnable(GL_LIGHTING);
 }
 
 void GLC_3DSphere(
-	unit px, unit py, unit pz,
-	unit radius, unsigned int divisions,
+	unit radius, unsigned int divisions, //division = precision of the sphere
+	unit px, unit py, unit pz,           //position
+	unit sx, unit sy, unit sz,           //scale
 	color* c
 ){
-	if(c){
-		glColor4f(c->r, c->g, c->b, c->a);
-	}
 
 /* ------------------------------------------------
                    Coordinates plan
@@ -171,14 +233,23 @@ void GLC_3DSphere(
 
 ------------------------------------------------ */
 
+	//color
+	if(c){
+		glColor4f(c->r, c->g, c->b, c->a);
+	}
+
 	//start drawing
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
 
+		//position - scale (no rotation because it is a sphere)
+		glTranslatef(px, py, pz);
+		glScalef(sx, sy, sz);
+
 		//ray
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  *(GLC_currentRay->a) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  *(GLC_currentRay->d) );
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, *(GLC_currentRay->s) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  *((GLC.currentRay)->a) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  *((GLC.currentRay)->d) );
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, *((GLC.currentRay)->s) );
 
 		//shape
 
@@ -196,9 +267,6 @@ void GLC_3DSphere(
 				glVertex3f(px + radius*cos(angle+step), py + radius*sin(angle+step), 0);
 			glEnd();
 		}
-
-		//position (no rotation because it is a sphere)
-		glTranslatef(px,py,pz);
 
 	//end drawing
 	glPopMatrix();

@@ -20,20 +20,38 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GLC [0.1.0] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                               Graphic Library Core
 
-    REQUIREMENTS :
-        - Linux operating system.
-        - Package 'freeglut3-dev' :
-                    sudo apt install freeglut3-dev
+        GLC is a graphic library for Linux using OpenGL, GLU, GLUT and some
+    other libraries I made to make it the MOST SIMPLE AS POSSIBLE.
 
-        This library is a SIMPLE graphic utility to manage 2D and 3D objects.
+        With GLC, you can manage any kind of computer event (keyboard press,
+    mouse moving, mouse clicking, window resizing...) and display objects on
+    screen in both 2D and 3D.
+
+    This library is composed of 10 files :
+        - glc.c/.h           (core)
+        - glc_objects2D.c/.h
+        - glc_objects2D.c/.h
+        - glc_stl.c/.h       (not necessary but useful to load 3D objects quickly)
+        - glc_specials.c/.h  (some other useful stuff)
+
+    Note that some files requires other libraries :
+        - glc_objects2D: PNG.c/.h
+        - glc_objects3D: PNG.c/.h
+        - glc_stl      : files.c/.h
+
+    These libraries are also creation of mine so you can check them out at :
+                    https://github.com/iasebsil83/C_PNG
+                    https://github.com/iasebsil83/C_files
+
+    GLC REQUIREMENTS :
+        - Linux operating system.
+        - Package 'freeglut3-dev':
+                    sudo apt install freeglut3-dev
+        - Package 'libpng':
+                    sudo apt install libpng-dev (for the use of PNG.c/.h only)
 
     BUGS  : .
     NOTES : .
-
-    GLC is compatible with another library I made
-    for PNG image manipulation : PNG.c/.h.
-    It is available here :
-            https://github.com/iasebsil83/C_PNG
 
     Contact     : i.a.sebsil83@gmail.com
     Youtube     : https://www.youtube.com/user/IAsebsil83
@@ -67,19 +85,61 @@
 
 
 
+// ---------------- DEFAULT VALUES ----------------
+
+//colors
+color* GLC_colors[8];
+static color red     = {.r=255, .g=0,   .b=0,   .a=255};
+static color green   = {.r=0,   .g=255, .b=0,   .a=255};
+static color blue    = {.r=0,   .g=0,   .b=255, .a=255};
+static color magenta = {.r=255, .g=0,   .b=255, .a=255};
+static color cyan    = {.r=255, .g=255, .b=0,   .a=255};
+static color yellow  = {.r=0,   .g=255, .b=255, .a=255};
+static color white   = {.r=255, .g=255, .b=255, .a=255};
+static color black   = {.r=0,   .g=0,   .b=0,   .a=255};
+
+//sky color
+color GLC_DEFAULT_skyColor = {
+	.r = 0,
+	.g = 100,
+	.b = 155
+};
+
+//ray
+ambient  GLC_DEFAULT_ambient  = {0.45, 0.45, 0.45, 1.0};
+diffuse  GLC_DEFAULT_diffuse  = { 0.7,  0.7,  0.7, 1.0};
+specular GLC_DEFAULT_specular = { 0.8,  0.8,  0.8, 1.0};
+ray      GLC_DEFAULT_ray = {
+	.a = &GLC_DEFAULT_ambient,
+	.d = &GLC_DEFAULT_diffuse,
+	.s = &GLC_DEFAULT_specular
+};
+
+//light
+light GLC_DEFAULT_light = {
+	.p = { 50.0, 0.0, 50.0, 0.0},
+	.r = &GLC_DEFAULT_ray
+};
+
+//position - rotation - scale
+prs GLC_DEFAULT_prs = {
+	.pos = { .x=0, .y=0, .z=0 },
+	.rot = { .x=0, .y=0, .z=0 },
+	.sca = { .x=1, .y=1, .z=1 }
+};
+
+
+
+
+
+
+
+
 // ---------------- INITIALIZATION ----------------
 
 //window variables (glc only)
 static int GLC_window               = -1;
-static int GLC_width_2              =  0;
-static int GLC_height_2             =  0;
 static int GLC_timedExecution_delay = -1;
-
-//debug
-//uncomment the line below to activate debug messages
-//#define DEBUG_ON
-//uncomment the line below to activate deep debug messages
-//#define DEEP_DEBUG_ON
 
 //constant 3D attributes (glc only)
 #define GLC_UP_X 0.0
@@ -87,57 +147,36 @@ static int GLC_timedExecution_delay = -1;
 #define GLC_UP_Z 0.0
 
 //camera
-xyz GLC_camPos = {
-	.x = 0.0,
-	.y = 0.0,
-	.z = 0.0
-};
-xyz GLC_camRot = {
-	.x = 0.0,
-	.y = 0.0,
-	.z = 0.0
-};
-xyz GLC_lookAt = {
-	.x = 0.0,
-	.y = 0.0,
-	.z = 0.0
-};
+GLC_vars GLC = {
 
-//sky colors
-color GLC_skyColor = {
-	.r = 0,
-	.g = 200,
-	.b = 255
-};
+	//scene
+	.camPos       = { .x=0, .y=0, .z=0 },
+	.camRot       = { .x=0, .y=0, .z=0 },
+	.skyColor     = &GLC_DEFAULT_skyColor,
+	.currentRay   = &GLC_DEFAULT_ray,
+	.currentLight = &GLC_DEFAULT_light,
 
-//rays
-ambient  GLC_defaultAmbient  = {0.45, 0.45, 0.45, 1.0};
-diffuse  GLC_defaultDiffuse  = { 0.7,  0.7,  0.7, 1.0};
-specular GLC_defaultSpecular = { 0.8,  0.8,  0.8, 1.0};
-ray      GLC_defaultRay = {
-	.a = &GLC_defaultAmbient,
-	.d = &GLC_defaultDiffuse,
-	.s = &GLC_defaultSpecular
-};
+	//resize
+	.width        = 0,
+	.height       = 0,
+	.width_2      = 0, // width/2
+	.height_2     = 0, // height/2
+	.newWidth     = 0,
+	.newHeight    = 0,
 
-//light
-light GLC_light = {
-	.pos = { 50.0, 0.0, 50.0, 0.0},
-	.r   = &GLC_defaultRay
-};
+	//keyboard
+	.keyState     = 0,
+	.key          = 0,
 
-//event variables
-unsigned int   GLC_newWidth    = 0; //resize
-unsigned int   GLC_newHeight   = 0;
-unsigned int   GLC_width       = 0;
-unsigned int   GLC_height      = 0;
-         int   GLC_keyState    = 0; //keyboard
-unsigned short GLC_key         = 0;
-         int   GLC_mouseState  = 0; //mouse
-         int   GLC_mouseButton = 0;
-         int   GLC_mouseScroll = 0;
-         int   GLC_mouseX      = 0;
-         int   GLC_mouseY      = 0;
+	//mouse
+	.mouseX       = 0,
+	.mouseY       = 0,
+	.prevMouseX   = 0,
+	.prevMouseY   = 0,
+	.mouseState   = 0,
+	.mouseButton  = 0,
+	.mouseScroll  = 0
+};
 
 //event handler
 extern void GLC_event(int event);
@@ -177,12 +216,13 @@ static void GLCL_timedExecution(int i){
 
 //display
 static void GLCL_display() {
+
 	//clear screen
 	glClearColor(
-		(unit)(GLC_skyColor.r),
-		(unit)(GLC_skyColor.g),
-		(unit)(GLC_skyColor.b),
-		(unit)(GLC_skyColor.a)
+		(unit)((GLC.skyColor)->r),
+		(unit)((GLC.skyColor)->g),
+		(unit)((GLC.skyColor)->b),
+		(unit)((GLC.skyColor)->a)
 	);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLineWidth(CST4);
@@ -190,20 +230,22 @@ static void GLCL_display() {
 	glLoadIdentity();
 
 	//set viewpoint
+	float cosY = cos(GLC.camRot.y);
+	float sinY = sin(GLC.camRot.y);
 	gluLookAt(
-		GLC_camPos.x,  GLC_camPos.y,  GLC_camPos.z,
-		GLC_lookAt.x,  GLC_lookAt.y,  GLC_lookAt.z,
-		GLC_UP_X,      GLC_UP_Y,      GLC_UP_Z
+		GLC.camPos.x,      GLC.camPos.y, GLC.camPos.z,
+		GLC.camPos.x+sinY, GLC.camPos.y, GLC.camPos.z-cosY,
+		GLC_UP_X,          GLC_UP_Y,     GLC_UP_Z
 	);
 
 	//light
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glShadeModel(GL_SMOOTH);
-	glLightfv(GL_LIGHT0, GL_POSITION,    GLC_light.pos      );
-	glLightfv(GL_LIGHT0, GL_AMBIENT,  *((GLC_light.r  )->s) );
-	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *((GLC_light.r  )->s) );
-	glLightfv(GL_LIGHT0, GL_SPECULAR, *((GLC_light.r  )->s) );
+	glLightfv(GL_LIGHT0, GL_POSITION,     (GLC.currentLight)->p        );
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->s) );
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->s) );
+	glLightfv(GL_LIGHT0, GL_SPECULAR, *(( (GLC.currentLight)->r  )->s) );
 
 	//extern program display
 	GLC_event(GLC_DISPLAY);
@@ -214,26 +256,26 @@ static void GLCL_display() {
 
 //keyboard
 static void GLCL_keyPressed(GLubyte g, int x,int y){
-	GLC_key = g;
-	GLC_keyState = GLC_KEY_PRESSED;
+	GLC.key      = g;
+	GLC.keyState = GLC_KEY_PRESSED;
 	GLC_event(GLC_KEYBOARD);
 }
 
 static void GLCL_keyPressed_special(int keyCode, int x,int y){
-	GLC_key = 256 + (unsigned char)keyCode;
-	GLC_keyState = GLC_KEY_PRESSED;
+	GLC.key      = 256 + (unsigned char)keyCode;
+	GLC.keyState = GLC_KEY_PRESSED;
 	GLC_event(GLC_KEYBOARD);
 }
 
 static void GLCL_keyReleased(GLubyte g, int x,int y){
-	GLC_key = g;
-	GLC_keyState = GLC_KEY_RELEASED;
+	GLC.key      = g;
+	GLC.keyState = GLC_KEY_RELEASED;
 	GLC_event(GLC_KEYBOARD);
 }
 
 static void GLCL_keyReleased_special(int keyCode, int x,int y){
-	GLC_key = 256 + (unsigned char)keyCode;
-	GLC_keyState = GLC_KEY_RELEASED;
+	GLC.key      = 256 + (unsigned char)keyCode;
+	GLC.keyState = GLC_KEY_RELEASED;
 	GLC_event(GLC_KEYBOARD);
 }
 
@@ -241,30 +283,44 @@ static void GLCL_keyReleased_special(int keyCode, int x,int y){
 
 //mouse
 static void GLCL_mouseButton(int button, int state, int x,int y){
-	GLC_mouseX = x;
-	GLC_mouseY = GLC_height - y;
-	GLC_mouseState = state;
+
+	//store previous position
+	GLC.prevMouseX = GLC.mouseX;
+	GLC.prevMouseX = GLC.mouseX;
+
+	//get new position
+	GLC.mouseX     = x;
+	GLC.mouseY     = GLC.height - y;
+	GLC.mouseState = state;
 
 	//scroll
 	if(button == 3 || button == 4){
 		if(state == GLC_MOUSE_PRESSED){
-			GLC_mouseScroll = button;
+			GLC.mouseScroll = button;
 			GLC_event(GLC_MOUSE_SCROLL);
 		}
 	}else{
-		GLC_mouseButton = button;
+		GLC.mouseButton = button;
 		GLC_event(GLC_MOUSE_CLICK);
 	}
 }
 
 static void GLCL_mouseMoved(int x,int y){
-	GLC_mouseX = x;
-	GLC_mouseY = GLC_height - y;
+
+	//store previous position
+	GLC.prevMouseX = GLC.mouseX;
+	GLC.prevMouseX = GLC.mouseX;
+
+	//get new position
+	GLC.mouseX = x;
+	GLC.mouseY = GLC.height - y;
+
+	//scroll reset
 	usleep(1);
-	if(GLC_mouseScroll == 0){
+	if(GLC.mouseScroll == 0){
 		GLC_event(GLC_MOUSE_MOVE);
 	}else{
-		GLC_mouseScroll = 0;
+		GLC.mouseScroll = 0;
 	}
 }
 
@@ -274,17 +330,17 @@ static void GLCL_mouseMoved(int x,int y){
 static void GLCL_reshape(int newWidth,int newHeight){
 
 	//raise event with old values
-	GLC_newWidth  = newWidth;
-	GLC_newHeight = newHeight;
+	GLC.newWidth  = newWidth;
+	GLC.newHeight = newHeight;
 	GLC_event(GLC_RESIZE);
-	GLC_width  = newWidth;
-	GLC_height = newHeight;
+	GLC.width  = newWidth;
+	GLC.height = newHeight;
 
 	//set new values
-	GLC_width    = newWidth;
-	GLC_width_2  = newWidth/2;
-	GLC_height   = newHeight;
-	GLC_height_2 = newHeight/2;
+	GLC.width    = newWidth;
+	GLC.width_2  = newWidth/2;
+	GLC.height   = newHeight;
+	GLC.height_2 = newHeight/2;
 
 	//reshape
 	glViewport(0,0, newWidth,newHeight);
@@ -312,7 +368,7 @@ void GLC_setThickness(unit thickness){
 }
 
 int GLC_inScreen(unit x,unit y){
-	return x >= 0 && x < GLC_width && y >= 0 && y < GLC_height;
+	return x >= 0 && x < GLC.width && y >= 0 && y < GLC.height;
 }
 
 void GLC_setTimer(int ms){
@@ -338,9 +394,9 @@ void GLC_setTimer(int ms){
 
 //init
 void GLC_init(const char* name, unit width,unit height){
-	int   argc   = 0;
-	char* argv_p = NULL;
-	char** argv  = &argv_p;
+	int    argc   = 0;
+	char*  argv_p = NULL;
+	char** argv   = &argv_p;
 
 	//error case
 	if(name == NULL){
@@ -355,15 +411,25 @@ void GLC_init(const char* name, unit width,unit height){
 	glutInitWindowSize(width,height);
 	GLC_window = glutCreateWindow(name);
 
+	//init colors
+	GLC_colors[RED]     = &red;
+	GLC_colors[GREEN]   = &green;
+	GLC_colors[BLUE]    = &blue;
+	GLC_colors[MAGENTA] = &magenta;
+	GLC_colors[CYAN]    = &cyan;
+	GLC_colors[YELLOW]  = &yellow;
+	GLC_colors[WHITE]   = &white;
+	GLC_colors[BLACK]   = &black;
+
 	//some settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LINE_SMOOTH);
 
 	//init color & depth buffers
-	GLC_width    = width;
-	GLC_width_2  = width/2;
-	GLC_height   = height;
-	GLC_height_2 = height/2;
+	GLC.width    = width;
+	GLC.width_2  = width/2;
+	GLC.height   = height;
+	GLC.height_2 = height/2;
 
 	//set local GLC event handlers (GLCL)
 	glutDisplayFunc      (GLCL_display            );

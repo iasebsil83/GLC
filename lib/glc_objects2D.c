@@ -20,7 +20,11 @@
 // ---------------- 2D UTILITIES ----------------
 
 //forms
-void GLC_2DPoint(unit x, unit y, color* c){
+void GLC_2DPoint(
+	unit x, unit y,
+	color* c
+){
+	//color
 	if(c){
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
@@ -31,7 +35,12 @@ void GLC_2DPoint(unit x, unit y, color* c){
 	glEnd();
 }
 
-void GLC_2DLine(unit x1, unit y1, unit x2, unit y2, color* c){
+void GLC_2DLine(
+	unit x1, unit y1, //1st point
+	unit x2, unit y2, //2nd point
+	color* c
+){
+	//color
 	if(c){
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
@@ -44,11 +53,12 @@ void GLC_2DLine(unit x1, unit y1, unit x2, unit y2, color* c){
 }
 
 void GLC_2DTriangle(
-	unit x1, unit y1,
-	unit x2, unit y2,
-	unit x3, unit y3,
+	unit x1, unit y1,     //1st point
+	unit x2, unit y2,     //2nd point
+	unit x3, unit y3,     //3rd point
 	color* c, char filled
 ){
+	//color
 	if(c){
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
@@ -71,11 +81,14 @@ void GLC_2DTriangle(
 }
 
 void GLC_2DRectangle(
-	unit x1, unit y1,
-	unit x2, unit y2,
-	color* c, char filled
+	unit x1, unit y1,        //1st corner
+	unit x2, unit y2,        //2nd corner
+	void* tex, char texType, //texture
+	char filled
 ){
-	if(c){
+	//texture is a color
+	if(!texType && tex){
+		color* c = (color*)tex;
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
 
@@ -106,13 +119,16 @@ void GLC_2DRectangle(
 }
 
 void GLC__2DQuad(
-	unit x1, unit y1,
-	unit x2, unit y2,
-	unit x3, unit y3,
-	unit x4, unit y4,
-	color* c, char filled
+	unit x1, unit y1,        //1st corner
+	unit x2, unit y2,        //2nd corner
+	unit x3, unit y3,        //3rd corner
+	unit x4, unit y4,        //4th corner
+	void* tex, char texType, //texture
+	char filled
 ){
-	if(c){
+	//texture is a color
+	if(!texType && tex){
+		color* c = (color*)tex;
 		glColor4f(c->r, c->g, c->b, c->a);
 	}
 
@@ -124,6 +140,12 @@ void GLC__2DQuad(
 			glVertex2f(x3,y3);
 			glVertex2f(x4,y4);
 		glEnd();
+
+		//texture is a picture
+		if(texType && tex){
+			//APPLY TEXTURE
+			//ON SHAPE
+		}
 
 		//GPU weakness : remove diagonals
 		unit thickness;
@@ -143,10 +165,12 @@ void GLC__2DQuad(
 }
 
 void GLC_2DCircle(
-	unit x,      unit y,
-	unit radius, unsigned int divisions,
+	unit radius, unsigned int divisions, //circle attributes
+	unit x,      unit y,                 //center position
 	color* c, char filled
 ){
+
+	//color
 	if(c){
 		glColor4f(c->r, c->g, c->b, c->a);
 	}

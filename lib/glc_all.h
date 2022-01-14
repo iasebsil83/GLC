@@ -19,3 +19,8 @@
 #ifndef GLC_OBJECTS3D_H
 	#include "glc_objects3D.h"
 #endif
+
+//STL
+#ifndef GLC_STL_H
+	#include "glc_stl.h"
+#endif
