@@ -58,7 +58,7 @@
     GitHub repo : https://github.com/iasebsil83
 
     Let's Code !                                  By I.A.
-******************************************************************************
+*****************************************************************************
 
     LICENCE :
 
@@ -99,17 +99,13 @@ static color white   = {.r=255, .g=255, .b=255, .a=255};
 static color black   = {.r=0,   .g=0,   .b=0,   .a=255};
 
 //sky color
-color GLC_DEFAULT_skyColor = {
-	.r = 0,
-	.g = 100,
-	.b = 155
-};
+color GLC_DEFAULT_skyColor = {.r=0, .g=100, .b=155};
 
 //ray
 ambient  GLC_DEFAULT_ambient  = {0.45, 0.45, 0.45, 1.0};
-diffuse  GLC_DEFAULT_diffuse  = { 0.7,  0.7,  0.7, 1.0};
-specular GLC_DEFAULT_specular = { 0.8,  0.8,  0.8, 1.0};
-ray      GLC_DEFAULT_ray = {
+diffuse  GLC_DEFAULT_diffuse  = { 1.0,  1.0,  1.0, 1.0};
+specular GLC_DEFAULT_specular = { 1.0,  1.0,  1.0, 1.0};
+ray      GLC_DEFAULT_ray      = {
 	.a = &GLC_DEFAULT_ambient,
 	.d = &GLC_DEFAULT_diffuse,
 	.s = &GLC_DEFAULT_specular
@@ -117,7 +113,7 @@ ray      GLC_DEFAULT_ray = {
 
 //light
 light GLC_DEFAULT_light = {
-	.p = { 50.0, 0.0, 50.0, 0.0},
+	.p = {500.0, 500.0, 500.0, 0.0},
 	.r = &GLC_DEFAULT_ray
 };
 
@@ -246,6 +242,10 @@ static void GLCL_display() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->s) );
 	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->s) );
 	glLightfv(GL_LIGHT0, GL_SPECULAR, *(( (GLC.currentLight)->r  )->s) );
+
+	glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_DEPTH_TEST);
 
 	//extern program display
 	GLC_event(GLC_DISPLAY);
