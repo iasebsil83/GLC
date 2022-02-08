@@ -26,6 +26,12 @@
 // ---------------- 3D OBJECTS ----------------
 
 //shapes
+void GLC_3Dshape(
+	int nbTriangle,
+	unit *vertices, // vertices tab
+	void* tex, char texType 									 // texture
+);
+
 void GLC_3DPlane(
 	unit lx, unit ly,          //length (width, height)
 	unit px, unit py, unit pz, //position

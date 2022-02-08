@@ -235,17 +235,13 @@ static void GLCL_display() {
 	);
 
 	//light
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 	glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0, GL_POSITION,     (GLC.currentLight)->p        );
-	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->s) );
-	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->s) );
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->a) );
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->d) );
 	glLightfv(GL_LIGHT0, GL_SPECULAR, *(( (GLC.currentLight)->r  )->s) );
-
-	glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
 
 	//extern program display
 	GLC_event(GLC_DISPLAY);

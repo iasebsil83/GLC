@@ -74,6 +74,13 @@ prs  mora_prs = {
 	.sca = { .x=1,   .y=1, .z=1  }
 };
 
+stl* cube_obj;
+prs cube_prs = {
+	.pos = { .x=0, .y=0,   .z=0 },
+	.rot = { .x=0,   .y=0,   .z=0  },
+	.sca = { .x=10000, .y=10000, .z=10000}
+};
+
 //ground
 xyz ground_size = { .x=1000, .y=-5, .z=1000 };
 
@@ -103,9 +110,10 @@ void loadStructures(){
 	satellite = png_read("png/Satellite.png");
 
 	//load stl
-	brain_obj = GLC_loadSTL("stl/Brain.stl");
+	/*brain_obj = GLC_loadSTL("stl/Brain.stl");
 	mando_obj = GLC_loadSTL("stl/Mandalorian.stl");
-	mora_obj  = GLC_loadSTL("stl/Mora.stl");
+	mora_obj  = GLC_loadSTL("stl/Mora.stl");*/
+	//cube_obj = GLC_loadSTL("stl/cube.stl");
 }
 
 
@@ -125,6 +133,7 @@ void GLC_event(int event){
 		case GLC_DISPLAY:
 
 			//plane1
+			GLC.currentRay = &GLC_DEFAULT_ray;
 			GLC_3DPlane(
 				XY(plane1_size),
 				PRS(plane1_prs),
@@ -144,17 +153,24 @@ void GLC_event(int event){
 				PRS(myBox_prs),
 				GLC_colors[BLUE], GLC_TEX_COLOR
 			);
-
-			//brain
+			
+			/*//brain
 			GLC.currentRay = &myRay;
 			GLC_3DSTL(
 				brain_obj,
 				PRS(brain_prs),
 				GLC_colors[RED]
-			);
+			);*/
 
-			//mando
-			GLC.currentRay = &GLC_DEFAULT_ray;
+			//cube
+			/*GLC.currentRay = &GLC_DEFAULT_ray;
+			GLC_3DSTL(
+				cube_obj,
+				PRS(cube_prs),
+				GLC_colors[RED]
+			);*/
+
+			/*//mando
 			GLC_3DSTL(
 				mando_obj,
 				PRS(mando_prs),
@@ -166,7 +182,7 @@ void GLC_event(int event){
 				mora_obj,
 				PRS(mora_prs),
 				GLC_colors[WHITE]
-			);
+			);*/
 		break;
 
 		//keyboard

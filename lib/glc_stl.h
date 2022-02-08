@@ -26,6 +26,7 @@
 typedef struct {
 	unsigned int plaksNbr;
 	char*        data;
+	unit* vertices;
 } stl;
 
 
