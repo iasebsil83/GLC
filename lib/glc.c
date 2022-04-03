@@ -30,7 +30,7 @@
     This library is composed of 10 files :
         - glc.c/.h           (core)
         - glc_objects2D.c/.h
-        - glc_objects2D.c/.h
+        - glc_objects3D.c/.h
         - glc_stl.c/.h       (not necessary but useful to load 3D objects quickly)
         - glc_specials.c/.h  (some other useful stuff)
 
@@ -103,8 +103,8 @@ color GLC_DEFAULT_skyColor = {.r=0, .g=100, .b=155};
 
 //ray
 ambient  GLC_DEFAULT_ambient  = {0.45, 0.45, 0.45, 1.0};
-diffuse  GLC_DEFAULT_diffuse  = { 1.0,  1.0,  1.0, 1.0};
-specular GLC_DEFAULT_specular = { 1.0,  1.0,  1.0, 1.0};
+diffuse  GLC_DEFAULT_diffuse  = { 0.3,  0.1,  0.5, 1.0};
+specular GLC_DEFAULT_specular = { 0.1,  0.4,  0.3, 1.0};
 ray      GLC_DEFAULT_ray      = {
 	.a = &GLC_DEFAULT_ambient,
 	.d = &GLC_DEFAULT_diffuse,
@@ -235,17 +235,14 @@ static void GLCL_display() {
 	);
 
 	//light
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHT0);
 	glShadeModel(GL_SMOOTH);
 	glLightfv(GL_LIGHT0, GL_POSITION,     (GLC.currentLight)->p        );
-	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->s) );
-	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->s) );
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  *(( (GLC.currentLight)->r  )->a) );
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  *(( (GLC.currentLight)->r  )->d) );
 	glLightfv(GL_LIGHT0, GL_SPECULAR, *(( (GLC.currentLight)->r  )->s) );
-
-	glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
 
 	//extern program display
 	GLC_event(GLC_DISPLAY);

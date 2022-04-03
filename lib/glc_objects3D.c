@@ -65,7 +65,7 @@ void GLC_3DPlane(
 	}
 
 	//start drawing
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glPushMatrix();
 
 		//position - rotation - scale
@@ -92,7 +92,7 @@ void GLC_3DPlane(
 
 	//end drawing
 	glPopMatrix();
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 }
 
 void GLC_3DHexaedron(
@@ -137,7 +137,7 @@ void GLC_3DHexaedron(
 	}
 
 	//start drawing
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glPushMatrix();
 
 		//position - rotation - scale
@@ -204,7 +204,7 @@ void GLC_3DHexaedron(
 
 	//end drawing
 	glPopMatrix();
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 }
 
 void GLC_3DSphere(
@@ -239,7 +239,7 @@ void GLC_3DSphere(
 	}
 
 	//start drawing
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glPushMatrix();
 
 		//position - scale (no rotation because it is a sphere)
@@ -270,5 +270,5 @@ void GLC_3DSphere(
 
 	//end drawing
 	glPopMatrix();
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 }

@@ -163,7 +163,7 @@ void GLC_3DSTL(
 	}
 
 	//start drawing
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glPushMatrix();
 
 		//position - rotation - scale
@@ -213,5 +213,5 @@ void GLC_3DSTL(
 
 	//end drawing
 	glPopMatrix();
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 }
