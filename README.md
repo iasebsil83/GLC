@@ -1,2 +1,1 @@
-// GLC - STEAUC //
-Move : A (Down) / Z (Forward) / S (Backward)
+All the information about GLC is inside lib/glc.c
