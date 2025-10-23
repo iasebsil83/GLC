@@ -15,8 +15,6 @@
 
 
 
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GLC_STL [0.1.0] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                STL files in GLC
 
@@ -28,15 +26,7 @@
     NOTE : This file is NOT required to run GLC though it is quite useful to load 3D
            structures more easily.
 
-    14/01/2022 > [0.1.0] :
-    - Created glc_stl.c/.h.
-
-    BUGS : .
-    NOTES : .
-
-    Contact     : i.a.sebsil83@gmail.com
-    Youtube     : https://www.youtube.com/user/IAsebsil83
-    GitHub repo : https://github.com/iasebsil83
+    Contact: https://github.com/iasebsil83
 
     Let's Code !                                  By I.A.
 ********************************************************************************
@@ -66,14 +56,10 @@
 
 
 
-
-
 // ---------------- DECLARATIONS ----------------
 
 //glc shared variables
 extern GLC_vars GLC;
-
-
 
 
 

@@ -18,14 +18,10 @@
 
 
 
-
-
 // ---------------- DECLARATIONS ----------------
 
 //glc shared variables
 extern GLC_vars GLC;
-
-
 
 
 

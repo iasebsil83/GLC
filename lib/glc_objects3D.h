@@ -6,8 +6,6 @@
 
 
 
-
-
 // ---------------- IMPORTATIONS ----------------
 
 //glc
@@ -15,8 +13,6 @@
 
 //pictures
 #include "PNG.h"
-
-
 
 
 
@@ -58,12 +54,5 @@ void GLC_3DSphere(
 	unit sx, unit sy, unit sz,           //scale
 	color* c
 );
-
-
-
-
-
-
-
 
 #endif

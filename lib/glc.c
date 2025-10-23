@@ -15,8 +15,6 @@
 
 
 
-
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GLC [0.1.0] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                               Graphic Library Core
 
@@ -50,12 +48,7 @@
         - Package 'libpng':
                     sudo apt install libpng-dev (for the use of PNG.c/.h only)
 
-    BUGS  : .
-    NOTES : .
-
-    Contact     : i.a.sebsil83@gmail.com
-    Youtube     : https://www.youtube.com/user/IAsebsil83
-    GitHub repo : https://github.com/iasebsil83
+    Contact: https://github.com/iasebsil83
 
     Let's Code !                                  By I.A.
 *****************************************************************************
@@ -80,8 +73,6 @@
 
     If not, see <https://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-
 
 
 
@@ -126,8 +117,6 @@ prs GLC_DEFAULT_prs = {
 	.rot = { .x=0, .y=0, .z=0 },
 	.sca = { .x=1, .y=1, .z=1 }
 };
-
-
 
 
 
@@ -185,8 +174,6 @@ extern void GLC_event(int event);
 #define CST2 1
 #define CST3 1200
 #define CST4 8
-
-
 
 
 
@@ -357,8 +344,6 @@ static void GLCL_reshape(int newWidth,int newHeight){
 
 
 
-
-
 // ---------------- GENERAL TOOLS ----------------
 
 //useful
@@ -382,8 +367,6 @@ void GLC_setTimer(int ms){
 	//set new timedExecution delay
 	GLC_timedExecution_delay = ms;
 }
-
-
 
 
 

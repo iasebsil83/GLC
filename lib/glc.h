@@ -6,14 +6,10 @@
 
 
 
-
-
 // ---------------- IMPORTATIONS ----------------
 
 //openGL + GLU + GLUT
 #include <glut.h>
-
-
 
 
 
@@ -305,8 +301,6 @@ typedef struct {
 
 
 
-
-
 // ---------------- SHORTCUTS ----------------
 
 //position
@@ -315,8 +309,6 @@ typedef struct {
 
 //position - rotation - scale
 #define PRS(o) o.pos.x,o.pos.y,o.pos.z, o.rot.x,o.rot.y,o.rot.z, o.sca.x,o.sca.y,o.sca.z
-
-
 
 
 
@@ -339,8 +331,6 @@ void GLC_setTimer(int ms);
 
 
 
-
-
 // ---------------- BASICS -----------------
 
 //init
@@ -349,12 +339,5 @@ void GLC_init(const char* name, unit width, unit height);
 //start - stop
 #define GLC_start() glutMainLoop()
 void GLC_stop();
-
-
-
-
-
-
-
 
 #endif

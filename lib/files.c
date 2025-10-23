@@ -4,13 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-
 //own header
 #include "files.h"
-
-
 
 
 
@@ -29,29 +24,7 @@
      - file_read()
      - file_write()
 
-    02/10/2020 > [0.1.0] :
-    - Created FRW.c/.h.
-
-    07/01/2021 > [0.1.1] :
-    - Added a header file (in order to use it as a library).
-    - Removed binary/text mode selection.
-    - Changed prototypes to allow FRW_read() to return also data length.
-    - Fixed writing bug in binary files.
-    - Renamed library from "FRW" to "files".
-    - Added demonstration program.
-
-    15/01/2021 > [0.1.2] :
-    - Added file_append().
-
-    BUGS : .
-    NOTES : file_write() doesn't use '\0' as a stop character to allow
-            users to write all kind of character in file.
-            Therefore, binary files can be wrote from text data without
-            giving importance to '\0'.
-
-    Contact     : i.a.sebsil83@gmail.com
-    Youtube     : https://www.youtube.com/user/IAsebsil83
-    GitHub repo : https://github.com/iasebsil83
+    Contact: https://github.com/iasebsil83
 
     Let's Code !                                  By I.A.
 ******************************************************************************************
@@ -76,8 +49,6 @@
 
     If not, see <https://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-
 
 
 

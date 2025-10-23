@@ -11,8 +11,6 @@
 
 
 
-
-
 // ---------------- DECLARATIONS ----------------
 
 //GLC shared variables
@@ -36,8 +34,6 @@ ray myRay = {
 	.d = &myDiffuse,
 	.s = &mySpecular
 };
-
-
 
 
 
@@ -107,8 +103,6 @@ void loadStructures(){
 	mando_obj = GLC_loadSTL("stl/Mandalorian.stl");
 	mora_obj  = GLC_loadSTL("stl/Mora.stl");
 }
-
-
 
 
 
@@ -282,8 +276,6 @@ void GLC_event(int event){
 		break;
 	}
 }
-
-
 
 
 

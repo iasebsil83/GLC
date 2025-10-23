@@ -6,8 +6,6 @@
 
 
 
-
-
 // ---------------- IMPORTATIONS ----------------
 
 //glc
@@ -15,8 +13,6 @@
 
 //pictures
 #include "PNG.h"
-
-
 
 
 
@@ -65,12 +61,5 @@ void GLC_2DCircle(
 	unit x, unit y,                      //center position
 	color* c, char filled
 );
-
-
-
-
-
-
-
 
 #endif

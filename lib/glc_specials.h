@@ -6,14 +6,10 @@
 
 
 
-
-
 // ---------------- IMPORTATIONS ----------------
 
 //glc
 #include "glc.h"
-
-
 
 
 
@@ -34,18 +30,9 @@ typedef struct {
 
 
 
-
-
 // ---------------- 2D ELEMENTS ----------------
 
 //text
 void GLC_text(char* text, unit size, unit x, unit y);
-
-
-
-
-
-
-
 
 #endif

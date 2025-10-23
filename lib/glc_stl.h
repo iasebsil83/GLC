@@ -6,14 +6,10 @@
 
 
 
-
-
 // ---------------- IMPORTATIONS ----------------
 
 //glc
 #include "glc.h"
-
-
 
 
 
@@ -27,8 +23,6 @@ typedef struct {
 	unsigned int plaksNbr;
 	char*        data;
 } stl;
-
-
 
 
 
@@ -49,12 +43,5 @@ void GLC_3DSTL(
 	unit sx, unit sy, unit sz, //scale
 	color* c
 );
-
-
-
-
-
-
-
 
 #endif

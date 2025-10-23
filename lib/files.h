@@ -6,8 +6,6 @@
 
 
 
-
-
 // ---------------- DEFINITIONS ----------------
 
 //error codes
@@ -22,8 +20,6 @@
 
 
 
-
-
 // ---------------- BASICS ----------------
 
 //read - write - append
@@ -32,12 +28,5 @@ char file_read(char* path, char** data, size_t* length); // reads from file #pat
 char file_write(char* path, char** data, size_t* length); // writes into file #path#, data from #data# from index 0 to #length#
                                                           // WARNING ! Value inside data will not be free
 char file_append(char* path, char** data, size_t* length); // same warnings as file_write()
-
-
-
-
-
-
-
 
 #endif

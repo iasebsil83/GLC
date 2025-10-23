@@ -4,19 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-
 //libpng utility
 #include <png.h>
 
-
-
-
 //own header
 #include "PNG.h"
-
-
 
 
 
@@ -39,15 +31,7 @@
                    https://github.com/iasebsil83/S2DE
                    https://github.com/iasebsil83/S3DE
 
-    02/10/2020 > [0.1.0] :
-    - Created PNG.c/.h.
-
-    BUGS : .
-    NOTES : .
-
-    Contact     : i.a.sebsil83@gmail.com
-    Youtube     : https://www.youtube.com/user/IAsebsil83
-    GitHub repo : https://github.com/iasebsil83
+    Contact: https://github.com/iasebsil83
 
     Let's Code !                                  By I.A.
 ******************************************************************************************
@@ -71,8 +55,6 @@
 
     If not, see <https://www.gnu.org/licenses/>.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-
 
 
 
